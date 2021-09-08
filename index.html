@@ -1,0 +1,53 @@
+<DOCTYPE html>
+<html>
+ <head>
+ <-- Este script no existe!, y está bien que así sea, ya que lo genera
+ SocketIO automáticamente al recibir el pedido del archivo -->
+ <script src="/socket.io/socket.io.js" type="text/javascript"></script>
+ 
+ <script type="text/javascript">
+ // Nos conectamos al WebSocket
+ var socket = io.connect('http://localhost:8081');
+ 
+ // Nos suscribimos al mensaje de bienvenida
+ // que creamos en el servidor
+ socket.on('bienvenida', function (bienvenida) {
+ document.getElementById("defpage").innerHTML = bienvenida.digo;
+ 
+ // Una vez que nos saluda el servidor
+ // Le enviamos un mensaje pidiendo un random
+ // cada 5 segundos 
+ socket.emit('setRandom', 5000);
+ });
+ 
+ // Por otro lado nos suscribimos al mensaje del
+ // del servidor para el número random que nos va a enviar
+ socket.on('getRandom', function (data) {
+ console.log(data.numero);
+ });
+ 
+ //Nos suscribimos para obtener el total 
+ // Esto es lo que se debe implementar en vue y flutter
+ socket.on('getTotal', function (data) {
+ console.log(data);
+ document.getElementById("defpage").innerHTML = "Total: " + data
+ });
+ 
+ 
+ function send(){
+    console.log('sendids');
+    //Enviamos un numero para que el servidor lo sume a su local
+    socket.emit('setTotal', 10);
+ }
+ 
+ </script>
+ </head>
+ <body>
+    <div id='defpage'>
+    
+    </div>
+    <div id='buttonpage'>
+        <input type="button" value="Recargar" onclick="send()"/>
+    </div>
+ <body/>
+</html
